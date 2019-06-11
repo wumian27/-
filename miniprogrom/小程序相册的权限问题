@@ -1,0 +1,63 @@
+手机的东西需要获取权限才可以操作
+1.看他是否有权限
+wx.authorize({
+    scope:'scope.writePhotosAlbum',
+    success:()=>{
+        wx.saveImageToPhotosAlbum({
+            filePath:resFile,
+        })
+    },
+    fail:()=>{
+        wx.showModal({
+            title:'',
+            confirmText:'立即前往',
+            success:()=>{
+                //前往授权
+                   wx.openSetting({
+                       success
+                   })
+            }
+        })
+    }
+})
+
+wxCanvasToTempFilePath('cardCanvas').then(resFile => {
+          wx.authorize({
+            scope: 'scope.writePhotosAlbum',
+            success: (result) => {
+              wx.showLoading({
+                title: '正在保存',
+              });
+              wx.saveImageToPhotosAlbum({
+                filePath: resFile,
+                success: function (res) {
+                  wx.showToast({
+                    title: '保存成功',
+                  });
+                  wx.hideLoading();
+                },
+                fail: function () {
+                  wx.hideLoading();
+                  wx.showModal({
+                    title: '提示',
+                    content: '保存失败',
+                    showCancel: false,
+                  })
+                }
+              })
+            },
+            fail: () => {
+              wx.hideLoading();
+              wx.showModal({
+                title: '提示',
+                content: '保存到手机相册需要您的授权',
+                confirmText: '立即前往',
+                success: () => {
+                  wx.openSetting({
+                    success: () => {
+                    }
+                  })
+                }
+              })
+            },
+          });

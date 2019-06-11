@@ -1,0 +1,28 @@
+小程序传进来的值，可以在compoent里面修改
+组件的事件，可以在父组件里面通用
+
+代码:
+properties: {
+    //0为微信用户信息授权，1为微信手机号授权，2为EC登录和手机号授权
+    type: {
+      type: Number,
+      value: 0
+    },
+    isHidden: {
+      type: Boolean,
+      value: true
+    },
+  },
+
+   methods: {
+    //隐藏弹框   改变传进来的值
+    hideAlertView() {
+      this.setData({
+        isHidden: true
+      })
+    },
+   }
+
+外部调用事件
+this.alertItem = this.selectComponent("#alertItem")
+this.alertItem.hideAlertView()

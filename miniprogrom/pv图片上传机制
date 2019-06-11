@@ -1,0 +1,147 @@
+
+文件上传
+1 input中file属性，获取上传文件的对象 
+ let file = e.currentTarget.files[0];
+
+ 对文件类型和大小进行检查file.size>1024 .png
+
+ 2方式ajajx请求，获取阿里云的sign
+  const params = {
+            cate: 'smartcard',
+            name: file.name,//名称
+            type: file.type,//文件类型。png
+            size: file.size//文件大小
+        };
+        const signUrl = 'https://data2.workec.com/oss/sign';
+const sign = await request.get(signUrl, params);
+
+3.与服务器交流
+ const fd = {
+            key: sign.objectName,
+            policy: sign.sign.policy,
+            OSSAccessKeyId: sign.sign.accessid,
+            success_action_status: 200,
+            signature: sign.sign.signature,
+            file,
+        };
+const uploadPath = await uploadFile(fd, sign.sign.host, sign.objectName);
+
+xhr对象交流
+const uploadFile = (param, url, path) => {
+    return new Promise((res) => {
+        const xhr = new XMLHttpRequest();
+        const formData = new FormData();
+        Object.keys(param).forEach((key) => { formData.append(key, param[key]); });
+        xhr.open('POST', url);
+        xhr.send(formData);
+        xhr.onreadystatechange = () => {
+            res(xhr);
+        };
+    }).then((result) => {
+        if (result.status == 200) {
+            return `${url}/${path}`;
+        } else if (result.status != 0) {
+            message.error('上传失败');
+        }
+        return null;
+    });
+}
+
+
+const signUrl = 'https://data2.workec.com/oss/sign';
+
+const uploadFile = (param, url, path) => {
+    return new Promise((res) => {
+        const xhr = new XMLHttpRequest();
+        const formData = new FormData();
+        Object.keys(param).forEach((key) => { formData.append(key, param[key]); });
+        xhr.open('POST', url);
+        xhr.send(formData);
+        xhr.onreadystatechange = () => {
+            res(xhr);
+        };
+    }).then((result) => {
+        if (result.status == 200) {
+            return `${url}/${path}`;
+        } else if (result.status != 0) {
+            message.error('上传失败');
+        }
+        return null;
+    });
+}
+
+const isImgIsAvlible = (file) => {
+    if (file.type !== 'image/jpg' && file.type !== 'image/jpeg' && file.type !== 'image/png') {
+        return false;
+    }
+    return new Promise((res) => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            res(e.target.result);
+        };
+        reader.onerror = () => {
+            res(null);
+        };
+        reader.readAsDataURL(file);
+    }).then((result) => {
+        if (result == null) return false;
+        return new Promise((res) => {
+            const dom = document.createElement('img');
+            dom.src = result;
+            dom.onerror = () => {
+                res(false);
+            };
+            dom.onload = () => {
+                res(true);
+            };
+        });
+    });
+}
+
+async handleChange (e) {
+        let file = e.currentTarget.files[0];
+        const { fileList, maxSize, } = this.props;
+        const isImgCanUse = await isImgIsAvlible(file);
+        if (!isImgCanUse) {
+            this.setState({ error: '图片格式错误' });
+            message.error('图片格式错误');
+            return;
+        }
+        if (file && file.size > maxSize) {
+            this.setState({ error: '图片大小超过上传限制' });
+            message.error('图片大小超过上传限制');
+            return;
+        }
+        const params = {
+            cate: 'smartcard',
+            name: file.name,
+            type: file.type,
+            size: file.size,
+        };
+        const sign = await request.get(signUrl, params);
+        if (!sign) {
+            this.setState({ loading: false });
+            return;
+        }
+        const fd = {
+            key: sign.objectName,
+            policy: sign.sign.policy,
+            OSSAccessKeyId: sign.sign.accessid,
+            success_action_status: 200,
+            signature: sign.sign.signature,
+            file,
+        };
+        const uploadPath = await uploadFile(fd, sign.sign.host, sign.objectName);
+        const ECPath = `${sign.sign.cname}/${sign.objectName}`;
+
+        if (uploadPath) {
+            this.state.loading = false;
+            console.log('上传成功后', uploadPath, ECPath)
+            this.props.onChange(uploadPath, ECPath, this.indexCurrentImg);
+        } else {
+            message.error('上传失败');
+            this.setState({ loading: false });
+        }
+
+        this.indexCurrentImg = undefined;
+    }

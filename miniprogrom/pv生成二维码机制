@@ -1,0 +1,39 @@
+二维码的生成需要生成uid和cid 场景值23：
+
+
+getUid(cname) {
+        if (document.cookie.length > 0) {
+            let start = document.cookie.indexOf(cname + "=")
+            if (start != -1) {
+                start = start + cname.length + 1
+                let end = document.cookie.indexOf(";", start)
+                if (end == -1) {
+                    end = document.cookie.length
+                }
+                return unescape(document.cookie.substring(start, end))
+            }
+        }
+        return ''
+    }
+    //官网发布
+    async publish() {
+        await this.actions.sendAjax.publishCrop();
+        // this.actions.modal.onShowPublishModal();//暂时用的
+        let IDS = this.getUid('eclgid').split('.');
+        let uid = IDS[0];
+        let cid = IDS[1];
+        let params = {
+            scene: `23:${uid}&${cid}`,
+            width: 150,
+            hyaline: 0
+        }
+        //生成获取都是他
+        let data = await this.actions.sendAjax.createQrCode(params);
+        if (data.qr) {
+            this.setState({
+                qrCode: data.qr,
+                uid,
+                cid,
+            })
+        }
+    }

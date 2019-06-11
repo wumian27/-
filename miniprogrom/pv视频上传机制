@@ -1,0 +1,92 @@
+
+
+进度条，主要看四个事件upload.onloadstart开始上传事件 upload.onprogress进度 onload完成
+function uploadFile(param, url, path) {
+    console.log(this)
+    return new Promise((res) => {
+        const xhr = new XMLHttpRequest();
+        const formData = new FormData();
+        Object.keys(param).forEach((key) => { formData.append(key, param[key]); });
+        xhr.open('POST', url);
+        xhr.onload = this.uploadComplete.bind(this); //请求完成
+        xhr.onerror = this.uploadFailed.bind(this);//正在失败
+        xhr.upload.onprogress = this.progressFunction.bind(this); //【上传进度调用方法实现】
+        // xhr.send(formData);
+        xhr.upload.onloadstart = function () { //上传开始执行方法
+            ot = new Date().getTime(); //设置上传开始时间
+            oloaded = 0; //设置上传开始时，以上传的文件大小为0
+        };
+        xhr.send(formData);
+        xhr.onreadystatechange = () => {
+            res(xhr);
+        };
+    }).then((result) => {
+        if (result.status == 200) {
+            return `${url}/${path}`;
+        } else if (result.status != 0) {
+            message.error('上传失败');
+        }
+        return null;
+    });
+}
+
+progressFunction(evt) {
+        // event.total是需要传输的总字节，event.loaded是已经传输的字节。如果event.lengthComputable不为真，则event.total等于0
+        if (evt.lengthComputable) {
+            this.setState({
+                toggleUpload: false,
+                width: Math.round(evt.loaded / evt.total * 100),
+                // ShowProgress: true,
+                step: 1,
+            })
+        }
+
+        let nt = new Date().getTime(); //获取当前时间
+        let pertime = (nt - ot) / 1000; //计算出上次调用该方法时到现在的时间差，单位为s
+        ot = new Date().getTime(); //重新赋值时间，用于下次计算
+
+        let perload = evt.loaded - oloaded; //计算该分段上传的文件大小，单位b 
+        oloaded = evt.loaded; //重新赋值已上传文件大小，用以下次计算
+
+        //上传速度计算
+        let speed = perload / pertime; //单位b/s
+        // let bspeed = speed;
+        this.setState({
+            bspeed: speed,
+        },() => {
+            if (this.state.bspeed === 0) {
+                console.log('取消上传');
+            }
+        })
+     
+    }
+
+
+    uploadComplete(evt) {
+        //服务断接收完文件返回的结果  注意返回的字符串要去掉双引号
+        console.log(evt);
+        
+        if (evt.target.responseURL) {
+            console.log(evt.target)
+            // this.setState({
+            //     url:`${this.state.sign.sign.cname}/${this.state.sign.objectName}`,
+            // })
+            // var str = "../shiping/"+evt.target.responseText;
+            // const ECPath = `${sign.sign.cname}/${sign.objectName}`;
+            // alert("上传成功！");
+        } else {
+            console.log('上传失败');
+
+            this.setState({
+                // error: true,
+                step: 2,
+            })
+        }
+    }
+    //上传失败
+    uploadFailed(evt) {
+        this.setState({
+            // error: true,
+            step: 2,
+        })
+    }

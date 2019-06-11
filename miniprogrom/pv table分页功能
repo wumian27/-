@@ -1,0 +1,52 @@
+<Table
+    pagination={pageInfo.total <= pageInfo.per ? false : {
+        current: pageInfo.page,//当前页
+        pageSize: pageInfo.per,//每页显示最大数
+        total: pageInfo.total,//一共有多少条
+        onChange: this.actions.table.pagination.onChange,//改变页码
+    }}
+ />
+
+  pagination: {
+                onChange(page) {
+                    this.actions.table.getList(page);
+                },
+            }
+
+             async getList(page) {
+                // page === [undefined] first time
+                await this.props.actions.waitTable(true);
+                const data = await smartcard.getList(page);//重新获取
+                await this.props.actions.setPageInfo(data.pageInfo);
+                await this.props.actions.setList(data.list);
+                await this.props.actions.waitTable(false);
+            },
+
+export const getList = async (page = 1) => {
+
+    每页数据的时候
+    const pageInfo = {
+        curpage: 1,
+        per: 0,
+        total: 0,
+    };
+
+    const data = await request.get(apis.apiList, { page });
+    if (!_.isEmpty(data) === true) {
+        for (let item of data.list) {
+            if (!item.form) {
+                return { pageInfo, list: [], }
+            }
+        }
+        data.list = data.list.map((item, index) => {
+            return {
+                id: index + 1 + (data.pageInfo.curpage - 1) * data.pageInfo.per,
+                ...item,
+            }
+        });
+        return data;
+
+    } else {
+        return { pageInfo, list: [], };
+    }
+};
