@@ -1,3 +1,9 @@
+
+
+业务实现分页功能，需要后台提供current和显示几条和总的页数
+
+
+
 <Table
     pagination={pageInfo.total <= pageInfo.per ? false : {
         current: pageInfo.page,//当前页

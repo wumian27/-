@@ -1,5 +1,5 @@
-
-文件上传
+拿到第个照片，如何修改他
+文件上传,
 1 input中file属性，获取上传文件的对象 
  let file = e.currentTarget.files[0];
 

@@ -1,4 +1,4 @@
-
+业务显示视频上传的进度条：显示拿到视频第一帧的图片
 
 进度条，主要看四个事件upload.onloadstart开始上传事件 upload.onprogress进度 onload完成
 function uploadFile(param, url, path) {
@@ -90,3 +90,7 @@ progressFunction(evt) {
             step: 2,
         })
     }
+
+
+//视频第一帧
+video.url + '?x-oss-process=video/snapshot,t_7000,f_jpg,w_800,h_600,m_fast'
