@@ -1,0 +1,50 @@
+业务是将选择图片的地址通过navigateTo给另一个页面，另一个页面对图片进行处理
+将图片再次回传给上个页面；通过getCurrent获取页面的实例对象，调用其方法
+
+index.js
+
+chooseImage() {
+    console.log(222)
+    wx.chooseImage({
+      count: 1,	// 默认为9
+      sizeType: ['original', 'compressed'],	// 指定原图或者压缩图
+      sourceType: ['album', 'camera'],	// 指定图片来源
+      success: function (res) {
+        console.log(res);
+        let  tempFilePaths = res.tempFilePaths[0];
+        //跳转到other页面
+          wx.navigateTo({
+        url: `../image/image?url=${tempFilePaths}`,
+      })
+      }
+    })
+  },
+
+ selectImage(url) {
+     获取other页面返回值
+    console.log(url);
+      this.setData({
+        imageUrl:url
+      })
+ }
+
+
+
+other.js
+
+confirmImage() {
+    let currentPages = getCurrentPages();
+    let len = currentPages.length;
+    if (len >= 2) {
+      let prvPage = currentPages[len - 2];
+      let curPage = currentPages[len - 1];
+      wx.navigateBack({
+
+      });
+      //拿到上一个页面的对象，调用其方法
+      prvPage.selectImage(this.data.url)
+    } else {
+      console.log('没有页码跳转');
+
+    }
+}

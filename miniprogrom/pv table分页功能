@@ -18,7 +18,7 @@
                 await this.props.actions.waitTable(true);
                 const data = await smartcard.getList(page);//重新获取
                 await this.props.actions.setPageInfo(data.pageInfo);
-                await this.props.actions.setList(data.list);
+                await this.props.actions.setList(data.list);//改变table数据
                 await this.props.actions.waitTable(false);
             },
 
