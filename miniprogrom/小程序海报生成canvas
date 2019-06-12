@@ -1,0 +1,65 @@
+业务：生成汇报和预览；将画布转化为临时地址；进行图片预览。生成海报的过程
+1.wxml填写<canvas canvas-id="card" ></canvas>
+用position：absolute，right：1000px；将画布隐藏
+最主要的是canvas整个框的大小style={{width:,height:，}}其中宽度对图片预览只是大小问题；
+而height会影响美观 ；所以w:h=4:5
+一定用fillRect(0,0,w,h)设计背景色；才美观
+2.createCanvasContext();
+文字居中的方法setTextAlign('center);
+measureText('012220').width计算其高度；进行居中
+fillText('012220',中间位置，20);
+drawImage(url,10,10,w,h)；可以将图片变小，像素高；
+3.图片的url一定要通过getImageInfo进行处理，获取其tempFilePath，才能画
+
+一定延时画布才能画完，才能获取临时地址
+previePoster() {
+    let data = '你还想怎么样低功耗'
+    const requires = [
+      this.getImageInfo('../../imges/image_activity_default.png'),
+      this.getImageInfo('../../imges/image_activity_del.png')
+    ];
+
+    Promise.all(requires).then(res => {
+      const cvsCtx = wx.createCanvasContext('card', this);
+      cvsCtx.setFillStyle('#ffffff');
+      cvsCtx.fillRect(0, 0,280,475);
+      cvsCtx.fillStyle = '#000000';
+      cvsCtx.setFontSize(20);
+      cvsCtx.setTextAlign('center');
+      cvsCtx.fillText(data, 140, 30);
+      // 图片要设置大小
+      cvsCtx.drawImage('../../imges/image_activity_default.png', 100, 50, 100, 100);
+      cvsCtx.draw();
+      setTimeout(()=>{
+        this.canvasToTempPath('card').then(res => {
+        wx.previewImage({
+          current: res,
+          urls: [res],
+          success: (result) => {
+            console.log('cg');
+            
+          },
+          fail: () => {},
+          complete: () => {}
+        });
+          
+        })
+      },300)
+    })
+
+//获取图片信息
+getImageInfo(url) {
+    return new Promise(resolve => {
+      wx.getImageInfo({
+        src: url,
+        success: (result) => {
+          console.log(result);
+          resolve(result.path);
+        },
+        fail: () => { },
+        complete: () => { }
+      });
+
+    })
+
+  },
