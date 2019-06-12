@@ -1,0 +1,22 @@
+事件对象的属性
+e.detail.value获取值
+e.currentTarget.dataset获取最定义的值
+url：`../imgae?name=${value}`
+小程序的事件传值只能通过data-id 通过对象来获取其值：事件传递的最好方法，没有其他的咯
+
+组件与组件之间的交流，this.selectComponent('#item')
+page与page交流   getCurrentPages
+page与组件的交流 this.selectComponent('#item')；
+全局交流；app.global.card
+小程序官方返回的upload是string，需要用JSON.parse（res.data）;
+//navigate
+1.url传递
+wx.navigateTo({
+  url: 'test?id=1'
+})
+2.本地存储：
+wx.setStorageSync('username', 'ddd')
+3.全局的app对象
+app.global.card
+4.page和component进行交流
+getCurrentPages()和this.selectComponent('#item')
