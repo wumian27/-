@@ -1,6 +1,6 @@
 index.js
  onLoad: function(options) {
-     console。log（option）//{scene:'1:name=wujia&age=12'}
+     console.log（option）//{scene:'1:name=wujia&age=12'}
     console.log('首页场景值');
     const scene = decodeURIComponent(options.scene);
     console.log(scene);
