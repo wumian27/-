@@ -1,0 +1,62 @@
+index.js
+ onLoad: function(options) {
+     console。log（option）//{scene:'1:name=wujia&age=12'}
+    console.log('首页场景值');
+    const scene = decodeURIComponent(options.scene);
+    console.log(scene);
+    this.param.sceneData = this.getSceneData(scene);
+ }
+
+getSceneData(scene) {
+    if (_.isEmpty(scene)) {
+      return {
+        'type': 0,
+        'data': ''
+      }
+    } else {
+      const arrayScene = scene.split(':')
+      if (arrayScene.length == 2) {
+        const type = arrayScene[0]
+        const data = arrayScene[1]
+        console.log('场景值类型：' + type)
+        console.log('场景值：' + data)
+        return {
+          'type': type,
+          'data': data
+        }
+      } else {
+        return {
+          'type': 0,
+          'data': ''
+        }
+      }
+    }
+  },
+
+当场景为8时；；获取场景传过来的参数，跳转到../group-activity-detail/group-activity-detail
+
+  (sceneData.type == 8) {
+      const arrayScene = sceneData.data.split('&')
+      if (arrayScene.length == 2) {
+        const activityId = arrayScene[0]
+        const userId = arrayScene[1]
+        console.log('活动原始ID')
+        console.log(activityId)
+        console.log('活动邀请人原始ID')
+        console.log(userId)
+        Promise.all([
+          app.getWorkId(activityId, 0),
+          app.getWorkId(userId, 1)
+        ]).then(res => {
+          const uuid = res[0]
+          const shareId = res[1]
+          console.log('活动ID')
+          console.log(uuid)
+          console.log('活动邀请人ID')
+          console.log(shareId)
+          wx.navigateTo({
+            url: '../group-activity-detail/group-activity-detail?uuid=' + uuid + '&shareId=' + shareId + '&shareType=1',
+          })
+        })
+      }
+    } 
