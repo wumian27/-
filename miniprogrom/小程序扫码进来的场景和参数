@@ -60,6 +60,7 @@ getSceneData(scene) {
         })
       }
     } 
+<<<<<<< HEAD
 
 
     //真正的例子
@@ -105,3 +106,5 @@ onLoad:function(options){
 https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/qr-code/wxacode.getUnlimited.html；
 
 小程序无法对二进制的流图片的处理，交给java后台处理
+=======
+>>>>>>> 79733444e3051b4af8197dce9b9b3049906307c5
