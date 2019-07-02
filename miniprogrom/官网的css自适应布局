@@ -1,0 +1,14 @@
+学到的东西有：在浏览器页面直接打开对应的css找到目录，点击css,然后右键open in tab
+
+页面自适应不同设备大小
+第一种常见的是：给父级固定宽度居中；margin：0 auto；都在电脑浏览器端的的；
+第二种用@media screen and (min-width:768px) and (min-width:1365) {
+    .header {
+    }
+}
+@media only screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3)
+处理iphone底部栏的出现bug
+第三种：写两套代码：第一套是pc端；第二条手机端的
+第四种：设置父级最大最新的宽度；
+max-width: 300px;
+min-width: 200px;
