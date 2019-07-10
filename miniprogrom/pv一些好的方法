@@ -1,0 +1,59 @@
+store的值是从文件的名字获取，它index生成一个对象
+场景：component有自己的值和传进来的值，渲染需要判断两个值是否相等
+ componentWillReceiveProps(nextProps) {
+        const { showValue } = this.state;
+
+        if (nextProps.value !== showValue) {
+            this.state.showValue = nextProps.value;
+        }
+    }
+如果不相等，提取出来的值
+handleInputChange(key) {
+    匿名函数
+        return (value) => {
+            const { actions } = this.props;
+
+            actions.changeCondition(key, {text: value});
+        };
+    }
+值改的时候；调用外界的onchange改变props;同时设置state
+
+改变props的是changeCondition
+//修改查询数据
+export function changeCondition(key, value) {
+    console.log(key,value)
+    this.set(`condition/${key}`, value);
+    this.commit();
+    const notSearchList = [
+        key == 'checkCorp',
+        key == 'checkForm',
+    ];
+    const notSearch = notSearchList.reduce((pre, cur) => pre || cur, false);
+    if (!notSearch) {
+        //调用search执行一次
+        this.call(search, true);
+    }
+}
+
+
+子组件设计loading为true；写一个方法改变子组件自己私有参数父级调用即可
+ onclick = (e) => {
+        this.setState({
+            isLoading: true
+        });
+        //暴露出去的函数()=>{}
+        this.props.onClick(e, () => {
+            this.setState({
+                isLoading: false
+            });
+        });
+    }
+
+父级
+
+    onClick = (e, stopLoadingCallback) => {
+        const { actions } = this.props;
+     //请求后台数据   actions.search(true);
+        // test async request...
+        stopLoadingCallback();
+    };
