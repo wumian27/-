@@ -1,0 +1,20 @@
+要有滚动条的样式必须有height
+滚动条样式的设置
+修改一个样式影响其他样式，因为同个名称进行处理
+滚动条的样式修改第一次遇到
+坑改变导航条大小智能用background-clip:content-box;设计border；设置大小
+&：：-webkit-scrollbar-thumb { 
+    background-clip:'content-box';
+    border:'3px solid transparent'
+}
+坑隐藏滚动条的小按钮
+&：：-webkit-scrollbar-button:vertical:start,::wekit-scrollbar-button:vertical:end {
+      display:none;
+}
+
+&::-webkit-scrollbar-track 滚动条的轨道
+
+background-clip:背景图片的填充
+border-box;
+padding-box;
+content-box;

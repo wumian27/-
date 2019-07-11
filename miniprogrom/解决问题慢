@@ -1,0 +1,12 @@
+太依赖别人，一定要自己思考
+
+第一个store弄了半天，不按逻辑来找，就对着别人的来弄，以为就是它
+第一要在redux里面获取对象的属性值
+
+第二个table滚动条的样式
+没加scroll={{y:ture}}
+第二以为在body添加overflow:scroll;
+第三以为::-webkit-scrollbar-button可以隐藏设置width：
+第三个导航条大小：-webkit-scroll-thumb{
+    width:5
+}
